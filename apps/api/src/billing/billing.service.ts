@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Prisma, SubscriptionStatus } from '@prisma/client';
+import { SubscriptionStatus } from '@prisma/client';
 
 const PLANS: Record<string, { base: number; perUser: number }> = {
   starter: { base: 29, perUser: 3 },
@@ -55,7 +55,13 @@ export class BillingService {
   }
 
   async audit(organizationId: string, action: string, metadata: Record<string, unknown>) {
-    const jsonMetadata = metadata as Prisma.InputJsonValue;
-    return this.prisma.auditLog.create({ data: { organizationId, action, entity: 'Subscription', metadata: jsonMetadata } });
+    return this.prisma.auditLog.create({
+      data: {
+        organizationId,
+        action,
+        entity: 'Subscription',
+        metadata: JSON.stringify(metadata),
+      },
+    });
   }
 }
