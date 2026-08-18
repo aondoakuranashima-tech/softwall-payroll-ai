@@ -5,11 +5,29 @@ import Stripe from 'stripe';
 export class StripeService {
   private readonly stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '');
 
-  async createCheckoutSession(customerId: string | undefined, priceId: string) {
+  async createCheckoutSession(input: {
+    customerId?: string;
+    priceId: string;
+    organizationId: string;
+    plan: string;
+    seats: number;
+  }) {
     return this.stripe.checkout.sessions.create({
       mode: 'subscription',
-      customer: customerId,
-      line_items: [{ price: priceId, quantity: 1 }],
+      customer: input.customerId,
+      line_items: [{ price: input.priceId, quantity: input.seats }],
+      metadata: {
+        organizationId: input.organizationId,
+        plan: input.plan,
+        seats: String(input.seats),
+      },
+      subscription_data: {
+        metadata: {
+          organizationId: input.organizationId,
+          plan: input.plan,
+          seats: String(input.seats),
+        },
+      },
       success_url: `${process.env.APP_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.APP_URL}/billing`,
     });
