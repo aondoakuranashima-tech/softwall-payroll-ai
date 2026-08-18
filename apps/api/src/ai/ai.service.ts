@@ -1,0 +1,1 @@
+import {Injectable} from '@nestjs/common'; @Injectable() export class AiService{answer(question:string){return {answer:`Payroll AI received: ${question}`,suggestions:['Review payroll anomalies','Check employee deductions','Generate payroll cost forecast'],providerConfigured:Boolean(process.env.AI_API_KEY)}}}

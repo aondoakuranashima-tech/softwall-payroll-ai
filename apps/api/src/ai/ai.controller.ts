@@ -1,0 +1,1 @@
+import {Body,Controller,Post} from '@nestjs/common'; import {AiService} from './ai.service'; @Controller('ai') export class AiController{constructor(private readonly ai:AiService){} @Post('assistant') assistant(@Body() b:{question:string}){return this.ai.answer(b.question)}}

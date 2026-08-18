@@ -1,0 +1,2 @@
+import {Body,Controller,Get,Post} from '@nestjs/common'; import {PayrollService} from './payroll.service';
+@Controller('payroll') export class PayrollController{constructor(private readonly payroll:PayrollService){} @Get('health') health(){return {ok:true,service:'payroll'}} @Post('calculate') calculate(@Body() b:{gross:number;deductions?:number}){return this.payroll.calculate(b.gross,b.deductions??0)}}

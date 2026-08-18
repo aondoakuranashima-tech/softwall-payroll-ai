@@ -1,0 +1,1 @@
+import {SafeAreaView,Text,View} from 'react-native'; export default function App(){return <SafeAreaView><View style={{padding:24}}><Text>SOFTWALL PAYROLL AI</Text><Text style={{fontSize:32,fontWeight:'700'}}>Payroll on the go.</Text><Text>Employee self-service, payslips, leave and AI assistance.</Text></View></SafeAreaView>}

@@ -1,0 +1,1 @@
+import {Injectable} from '@nestjs/common'; @Injectable() export class PayrollService{calculate(gross:number,deductions:number){if(gross<0||deductions<0)throw new Error('Amounts cannot be negative');return {gross,deductions,net:Math.max(gross-deductions,0),employerCost:gross,currency:'USD',note:'Configure jurisdiction-specific tax rules before production use.'}}}

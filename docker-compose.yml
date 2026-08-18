@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: softwall
+      POSTGRES_PASSWORD: softwall
+      POSTGRES_DB: softwall
+    ports: ["5432:5432"]
+    volumes: [softwall_pg:/var/lib/postgresql/data]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+volumes:
+  softwall_pg:
