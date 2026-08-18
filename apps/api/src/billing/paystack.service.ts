@@ -11,11 +11,23 @@ export class PaystackService {
     },
   });
 
-  async initializeTransaction(email: string, amountKobo: number, planCode?: string) {
+  async initializeTransaction(input: {
+    email: string;
+    amountKobo: number;
+    planCode?: string;
+    organizationId: string;
+    plan: string;
+    seats: number;
+  }) {
     const { data } = await this.api.post('/transaction/initialize', {
-      email,
-      amount: amountKobo,
-      ...(planCode ? { plan: planCode } : {}),
+      email: input.email,
+      amount: input.amountKobo,
+      ...(input.planCode ? { plan: input.planCode } : {}),
+      metadata: {
+        organizationId: input.organizationId,
+        plan: input.plan,
+        seats: input.seats,
+      },
       callback_url: `${process.env.APP_URL}/billing/paystack/callback`,
     });
     return data;
