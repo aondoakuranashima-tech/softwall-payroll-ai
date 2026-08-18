@@ -1,13 +1,137 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
-enum Role { OWNER ADMIN PAYROLL_MANAGER HR_MANAGER ACCOUNTANT EMPLOYEE AUDITOR }
-enum PayrollStatus { DRAFT PROCESSING APPROVED PAID FAILED }
-enum SubscriptionStatus { TRIALING ACTIVE PAST_DUE CANCELED INCOMPLETE }
-model Organization { id String @id @default(cuid()) name String country String currency String createdAt DateTime @default(now()) updatedAt DateTime @updatedAt users User[] employees Employee[] payrollRuns PayrollRun[] subscriptions Subscription[] }
-model User { id String @id @default(cuid()) email String @unique name String passwordHash String role Role @default(EMPLOYEE) organizationId String organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade) employee Employee? createdAt DateTime @default(now()) }
-model Employee { id String @id @default(cuid()) employeeNo String firstName String lastName String email String baseSalary Decimal @db.Decimal(14,2) organizationId String organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade) userId String? @unique user User? @relation(fields:[userId],references:[id]) payrollItems PayrollItem[] createdAt DateTime @default(now()) }
-model PayrollRun { id String @id @default(cuid()) organizationId String organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade) periodStart DateTime periodEnd DateTime status PayrollStatus @default(DRAFT) grossTotal Decimal @db.Decimal(14,2) @default(0) deductionTotal Decimal @db.Decimal(14,2) @default(0) netTotal Decimal @db.Decimal(14,2) @default(0) items PayrollItem[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
-model PayrollItem { id String @id @default(cuid()) payrollRunId String payrollRun PayrollRun @relation(fields:[payrollRunId],references:[id],onDelete:Cascade) employeeId String employee Employee @relation(fields:[employeeId],references:[id],onDelete:Cascade) gross Decimal @db.Decimal(14,2) deductions Decimal @db.Decimal(14,2) net Decimal @db.Decimal(14,2) }
-model Subscription { id String @id @default(cuid()) organizationId String organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade) provider String providerCustomerId String? providerSubscriptionId String? plan String seats Int @default(1) status SubscriptionStatus @default(TRIALING) monthlyBaseCents Int monthlyPerUserCents Int currentPeriodEnd DateTime? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
-model BillingEvent { id String @id @default(cuid()) provider String eventId String createdAt DateTime @default(now()) @@unique([provider,eventId]) }
-model AuditLog { id String @id @default(cuid()) organizationId String actorUserId String? action String entity String entityId String? metadata Json? createdAt DateTime @default(now()) }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  PAYROLL_MANAGER
+  HR_MANAGER
+  ACCOUNTANT
+  EMPLOYEE
+  AUDITOR
+}
+
+enum PayrollStatus {
+  DRAFT
+  PROCESSING
+  APPROVED
+  PAID
+  FAILED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+model Organization {
+  id            String         @id @default(cuid())
+  name          String
+  country       String
+  currency      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  users         User[]
+  employees     Employee[]
+  payrollRuns   PayrollRun[]
+  subscriptions Subscription[]
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String
+  passwordHash   String
+  role           Role         @default(EMPLOYEE)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee       Employee?
+  createdAt      DateTime     @default(now())
+}
+
+model Employee {
+  id             String        @id @default(cuid())
+  employeeNo     String
+  firstName      String
+  lastName       String
+  email          String
+  baseSalary     Decimal       @db.Decimal(14, 2)
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?       @unique
+  user           User?         @relation(fields: [userId], references: [id])
+  payrollItems   PayrollItem[]
+  createdAt      DateTime      @default(now())
+}
+
+model PayrollRun {
+  id             String        @id @default(cuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  periodStart    DateTime
+  periodEnd      DateTime
+  status         PayrollStatus @default(DRAFT)
+  grossTotal     Decimal       @default(0) @db.Decimal(14, 2)
+  deductionTotal Decimal       @default(0) @db.Decimal(14, 2)
+  netTotal       Decimal       @default(0) @db.Decimal(14, 2)
+  items          PayrollItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model PayrollItem {
+  id           String    @id @default(cuid())
+  payrollRunId String
+  payrollRun   PayrollRun @relation(fields: [payrollRunId], references: [id], onDelete: Cascade)
+  employeeId   String
+  employee     Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  gross        Decimal   @db.Decimal(14, 2)
+  deductions   Decimal   @db.Decimal(14, 2)
+  net          Decimal   @db.Decimal(14, 2)
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  organizationId         String
+  organization           Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  provider               String
+  providerCustomerId     String?
+  providerSubscriptionId String?
+  plan                   String
+  seats                  Int                @default(1)
+  status                 SubscriptionStatus @default(TRIALING)
+  monthlyBaseCents       Int
+  monthlyPerUserCents    Int
+  currentPeriodEnd       DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+}
+
+model BillingEvent {
+  id        String   @id @default(cuid())
+  provider  String
+  eventId   String
+  createdAt DateTime @default(now())
+
+  @@unique([provider, eventId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  actorUserId    String?
+  action         String
+  entity         String
+  entityId       String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+}
