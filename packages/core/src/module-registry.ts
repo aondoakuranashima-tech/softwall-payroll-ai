@@ -1,0 +1,57 @@
+export const SOFTWALL_MODULES = [
+  'payroll',
+  'workforce',
+  'finance',
+  'invoice',
+  'expense',
+  'sales',
+  'support',
+  'contract',
+  'compliance',
+  'procurement',
+  'inventory',
+  'projectops',
+  'onboard',
+  'document',
+  'security',
+  'customer',
+  'marketing',
+  'it-asset',
+] as const;
+
+export type SoftwallModule = (typeof SOFTWALL_MODULES)[number];
+
+export const MODULE_DEPENDENCIES: Record<SoftwallModule, readonly SoftwallModule[]> = {
+  payroll: [],
+  workforce: ['payroll'],
+  finance: ['payroll', 'expense', 'invoice'],
+  invoice: [],
+  expense: ['workforce'],
+  sales: ['customer'],
+  support: ['customer'],
+  contract: ['customer'],
+  compliance: ['workforce', 'finance'],
+  procurement: ['finance'],
+  inventory: ['finance', 'procurement'],
+  projectops: ['workforce', 'customer'],
+  onboard: ['workforce', 'document'],
+  document: [],
+  security: [],
+  customer: [],
+  marketing: ['customer', 'sales'],
+  'it-asset': ['workforce', 'security'],
+};
+
+export const PLATFORM_CAPABILITIES = [
+  'identity',
+  'tenant-isolation',
+  'authorization',
+  'audit',
+  'billing',
+  'events',
+  'notifications',
+  'files',
+  'ai',
+  'analytics',
+  'integrations',
+] as const;
