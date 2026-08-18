@@ -1,6 +1,25 @@
 {
-  "name":"@softwall/api","private":true,
-  "scripts":{"dev":"nest start --watch","build":"nest build","prisma:generate":"prisma generate","prisma:migrate":"prisma migrate dev"},
-  "dependencies":{"@nestjs/common":"^11.0.0","@nestjs/core":"^11.0.0","@nestjs/jwt":"^11.0.0","@nestjs/platform-express":"^11.0.0","@prisma/client":"^6.0.0","class-validator":"^0.14.1","reflect-metadata":"^0.2.2","rxjs":"^7.8.1"},
-  "devDependencies":{"@nestjs/cli":"^11.0.0","prisma":"^6.0.0","typescript":"^5.7.0"}
+  "name": "@softwall/api",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "npm run prisma:generate && nest build",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@prisma/client": "^6.0.0",
+    "class-validator": "^0.14.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "prisma": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
 }
