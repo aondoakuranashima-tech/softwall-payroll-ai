@@ -1,3 +1,57 @@
-const features=[['Payroll automation','Run payroll, calculate gross-to-net, and generate payslips.'],['AI payroll assistant','Ask payroll questions and surface anomalies and cost insights.'],['Employee management','Manage employee records, roles, compensation and self-service.'],['Enterprise RBAC','Owner, admin, payroll, HR, accountant, employee and auditor roles.'],['Subscription billing','Monthly platform pricing plus per-user billing with Stripe and Paystack adapters.'],['Reports & audit','Payroll reports, audit trails and business-ready payroll analytics.']];
-const plans=[['Starter','$29/mo + $3/user'],['Business','$99/mo + $5/user'],['Enterprise','$499/mo + $8/user']];
-export default function Home(){return <main style={{fontFamily:'Inter,system-ui,sans-serif',background:'#f7f8fa',color:'#111827',minHeight:'100vh'}}><header style={{padding:'22px 7%',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#fff',borderBottom:'1px solid #e5e7eb'}}><strong style={{fontSize:20}}>SOFTWALL <span style={{fontWeight:400}}>PAYROLL AI</span></strong><span>AI-powered payroll for modern businesses</span></header><section style={{padding:'90px 7%',textAlign:'center',background:'#fff'}}><div style={{fontSize:13,fontWeight:700,letterSpacing:2}}>ENTERPRISE PAYROLL PLATFORM</div><h1 style={{fontSize:'clamp(42px,7vw,76px)',lineHeight:1.02,margin:'18px auto',maxWidth:900}}>Payroll, automated intelligently.</h1><p style={{fontSize:20,lineHeight:1.6,maxWidth:760,margin:'0 auto',color:'#4b5563'}}>Manage employees, calculate payroll, detect anomalies, generate reports and manage subscription billing from one secure platform.</p><div style={{marginTop:30}}><button style={{padding:'14px 24px',borderRadius:10,border:0,fontWeight:700,fontSize:16}}>Get started</button></div></section><section style={{padding:'65px 7%'}}><h2 style={{fontSize:36}}>Everything your payroll team needs</h2><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:18,marginTop:28}}>{features.map(([t,d])=><article key={t} style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:16,padding:24}}><h3>{t}</h3><p style={{color:'#4b5563',lineHeight:1.6}}>{d}</p></article>)}</div></section><section style={{padding:'65px 7%',background:'#fff'}}><h2 style={{fontSize:36}}>Simple, scalable pricing</h2><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:18,marginTop:28}}>{plans.map(([t,p])=><article key={t} style={{border:'1px solid #e5e7eb',borderRadius:16,padding:24}}><h3>{t}</h3><strong style={{fontSize:24}}>{p}</strong><p style={{color:'#4b5563'}}>Monthly subscription with per-user billing.</p></article>)}</div></section><footer style={{padding:'35px 7%',background:'#111827',color:'#fff'}}>© 2026 Softwall Payroll AI. Payroll software for businesses.</footer></main>}
+'use client';
+
+import Link from 'next/link';
+
+const features = [
+  ['Payroll automation','Run payroll, calculate gross-to-net, and generate payslips.'],
+  ['AI payroll assistant','Ask payroll questions and surface anomalies and cost insights.'],
+  ['Employee management','Manage employee records, roles, compensation and self-service.'],
+  ['Enterprise RBAC','Owner, admin, payroll, HR, accountant, employee and auditor roles.'],
+  ['Subscription billing','Monthly platform pricing plus per-user billing with Stripe and Paystack adapters.'],
+  ['Reports & audit','Payroll reports, audit trails and business-ready payroll analytics.'],
+];
+
+const plans = [
+  ['Starter','$29/mo + $3/user'],
+  ['Business','$99/mo + $5/user'],
+  ['Enterprise','$499/mo + $8/user'],
+];
+
+export default function Home() {
+  return (
+    <main style={{fontFamily:'Inter,system-ui,sans-serif',background:'#f7f8fa',color:'#111827',minHeight:'100vh'}}>
+      <header style={{padding:'22px 7%',display:'flex',justifyContent:'space-between',alignItems:'center',background:'#fff',borderBottom:'1px solid #e5e7eb',gap:20}}>
+        <strong style={{fontSize:20}}>SOFTWALL <span style={{fontWeight:400}}>PAYROLL AI</span></strong>
+        <nav style={{display:'flex',gap:12,alignItems:'center'}}>
+          <Link href="/login" style={{padding:'10px 16px'}}>Log in</Link>
+          <Link href="/signup" style={{padding:'10px 16px',borderRadius:8,background:'#111827',color:'#fff',textDecoration:'none',fontWeight:700}}>Sign up</Link>
+        </nav>
+      </header>
+
+      <section style={{padding:'90px 7%',textAlign:'center',background:'#fff'}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:2}}>ENTERPRISE PAYROLL PLATFORM</div>
+        <h1 style={{fontSize:'clamp(42px,7vw,76px)',lineHeight:1.02,margin:'18px auto',maxWidth:900}}>Payroll, automated intelligently.</h1>
+        <p style={{fontSize:20,lineHeight:1.6,maxWidth:760,margin:'0 auto',color:'#4b5563'}}>Manage employees, calculate payroll, detect anomalies, generate reports and manage subscription billing from one secure platform.</p>
+        <div style={{marginTop:30}}>
+          <Link href="/signup" style={{display:'inline-block',padding:'14px 24px',borderRadius:10,background:'#111827',color:'#fff',textDecoration:'none',fontWeight:700,fontSize:16}}>Get started</Link>
+        </div>
+      </section>
+
+      <section style={{padding:'65px 7%'}}>
+        <h2 style={{fontSize:36}}>Everything your payroll team needs</h2>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:18,marginTop:28}}>
+          {features.map(([t,d]) => <article key={t} style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:16,padding:24}}><h3>{t}</h3><p style={{color:'#4b5563',lineHeight:1.6}}>{d}</p></article>)}
+        </div>
+      </section>
+
+      <section style={{padding:'65px 7%',background:'#fff'}}>
+        <h2 style={{fontSize:36}}>Simple, scalable pricing</h2>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:18,marginTop:28}}>
+          {plans.map(([t,p]) => <article key={t} style={{border:'1px solid #e5e7eb',borderRadius:16,padding:24}}><h3>{t}</h3><strong style={{fontSize:24}}>{p}</strong><p style={{color:'#4b5563'}}>Monthly subscription with per-user billing.</p></article>)}
+        </div>
+      </section>
+
+      <footer style={{padding:'35px 7%',background:'#111827',color:'#fff'}}>© 2026 Softwall Payroll AI. Payroll software for businesses.</footer>
+    </main>
+  );
+}
