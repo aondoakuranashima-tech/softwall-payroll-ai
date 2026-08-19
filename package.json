@@ -6,8 +6,14 @@
   "scripts": {
     "build": "npm run build --workspace apps/web",
     "build:api": "npm run build --workspace apps/api",
-    "dev": "npm run dev --workspace apps/web",
+    "dev": "npm run dev:web",
+    "dev:web": "npm run dev --workspace apps/web",
+    "dev:api": "npm run dev --workspace apps/api",
+    "dev:all": "npm run dev:web & npm run dev:api",
+    "start": "npm run start --workspace apps/web",
+    "start:api": "node apps/api/dist/main.js",
     "db:generate": "npm --workspace apps/api run prisma:generate",
-    "db:migrate": "npm --workspace apps/api run prisma:migrate"
+    "db:migrate": "npm --workspace apps/api run prisma:migrate",
+    "db:migrate:deploy": "npm --workspace apps/api run prisma:migrate:deploy"
   }
 }
