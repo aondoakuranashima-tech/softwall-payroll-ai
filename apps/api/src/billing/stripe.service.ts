@@ -1,9 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
-  private readonly stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '');
+  private readonly stripe?: Stripe;
+
+  constructor() {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (key) this.stripe = new Stripe(key);
+  }
+
+  private requireStripe(): Stripe {
+    if (!this.stripe) {
+      throw new ServiceUnavailableException('Stripe billing is disabled. Configure STRIPE_SECRET_KEY to enable it.');
+    }
+    return this.stripe;
+  }
 
   async createCheckoutSession(input: {
     customerId?: string;
@@ -12,7 +24,8 @@ export class StripeService {
     plan: string;
     seats: number;
   }) {
-    return this.stripe.checkout.sessions.create({
+    const stripe = this.requireStripe();
+    return stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: input.customerId,
       line_items: [{ price: input.priceId, quantity: input.seats }],
@@ -34,17 +47,19 @@ export class StripeService {
   }
 
   async createPortalSession(customerId: string) {
-    return this.stripe.billingPortal.sessions.create({
+    const stripe = this.requireStripe();
+    return stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${process.env.APP_URL}/billing`,
     });
   }
 
   constructWebhookEvent(payload: Buffer, signature: string) {
-    return this.stripe.webhooks.constructEvent(
-      payload,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET ?? '',
-    );
+    const stripe = this.requireStripe();
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+      throw new ServiceUnavailableException('Stripe webhooks are disabled. Configure STRIPE_WEBHOOK_SECRET to enable them.');
+    }
+    return stripe.webhooks.constructEvent(payload, signature, webhookSecret);
   }
 }
