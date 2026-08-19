@@ -3,26 +3,23 @@ import OpenAI from 'openai';
 
 @Injectable()
 export class AiService {
-  private readonly freeClient?: OpenAI;
   private readonly openAiClient?: OpenAI;
+  private readonly geminiClient?: OpenAI;
 
   constructor() {
-    const openRouterKey = process.env.OPENROUTER_API_KEY;
     const openAiKey = process.env.OPENAI_API_KEY || process.env.AI_API_KEY;
-
-    if (openRouterKey) {
-      this.freeClient = new OpenAI({
-        apiKey: openRouterKey,
-        baseURL: 'https://openrouter.ai/api/v1',
-        defaultHeaders: {
-          'HTTP-Referer': process.env.APP_URL || 'https://softwall-payroll-web.onrender.com',
-          'X-Title': 'Softwall Payroll AI',
-        },
-      });
-    }
+    const geminiKey = process.env.GEMINI_API_KEY;
 
     if (openAiKey) {
       this.openAiClient = new OpenAI({ apiKey: openAiKey });
+    }
+
+    // Gemini exposes an OpenAI-compatible endpoint.
+    if (geminiKey) {
+      this.geminiClient = new OpenAI({
+        apiKey: geminiKey,
+        baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+      });
     }
   }
 
@@ -44,27 +41,31 @@ export class AiService {
   }
 
   async answer(question: string) {
-    const freeModel = process.env.OPENROUTER_MODEL || 'openrouter/free';
-    const openAiModel = process.env.AI_MODEL || 'gpt-5.6-luna';
+    const geminiModel = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const openAiModel = process.env.OPENAI_MODEL || process.env.AI_MODEL || 'gpt-5.6-luna';
 
-    // Primary: free OpenAI-compatible provider (OpenRouter).
-    if (this.freeClient) {
+    // Primary provider: Google Gemini.
+    if (this.geminiClient) {
       try {
-        const response = await this.freeClient.responses.create({
-          model: freeModel,
-          input: [
+        const response = await this.geminiClient.chat.completions.create({
+          model: geminiModel,
+          messages: [
             { role: 'system', content: this.systemPrompt },
             { role: 'user', content: question },
           ],
         });
 
-        return this.result(response.output_text, 'openrouter', freeModel);
+        return this.result(
+          response.choices[0]?.message?.content || 'No AI response was returned.',
+          'google-gemini',
+          geminiModel,
+        );
       } catch (error) {
-        console.warn('OpenRouter AI request failed; falling back to OpenAI.', error);
+        console.warn('Google Gemini request failed; falling back to OpenAI.', error);
       }
     }
 
-    // Fallback: direct OpenAI API.
+    // Fallback provider: OpenAI.
     if (this.openAiClient) {
       try {
         const response = await this.openAiClient.responses.create({
@@ -82,7 +83,7 @@ export class AiService {
     }
 
     throw new InternalServerErrorException(
-      'No AI provider is configured. Set OPENROUTER_API_KEY or OPENAI_API_KEY (AI_API_KEY is also supported for OpenAI fallback).',
+      'No AI provider is configured. Set GEMINI_API_KEY or OPENAI_API_KEY (AI_API_KEY is also supported for OpenAI fallback).',
     );
   }
 }
