@@ -2,18 +2,16 @@
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://softwall-payroll-api-v2.onrender.com';
 
 export default function LoginPage() {
   const router = useRouter();
-  const params = useSearchParams();
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState('');
-  const registered=params.get('registered') === '1';
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); setError(''); setLoading(true);
@@ -31,7 +29,6 @@ export default function LoginPage() {
   return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'#f7f8fa',fontFamily:'Inter,system-ui,sans-serif',padding:24}}>
     <form onSubmit={submit} style={{width:'100%',maxWidth:440,background:'#fff',padding:32,borderRadius:16,border:'1px solid #e5e7eb'}}>
       <h1 style={{marginTop:0}}>Log in</h1>
-      {registered && <div style={{padding:12,margin:'16px 0',background:'#dcfce7',color:'#166534',borderRadius:8}}>Account created. You can now log in.</div>}
       {error && <div role="alert" style={{padding:12,margin:'16px 0',background:'#fee2e2',color:'#991b1b',borderRadius:8}}>{error}</div>}
       <label style={{display:'block',marginTop:16}}>Email<input required type="email" value={email} onChange={e=>setEmail(e.target.value)} style={input}/></label>
       <label style={{display:'block',marginTop:16}}>Password<input required type="password" value={password} onChange={e=>setPassword(e.target.value)} style={input}/></label>
