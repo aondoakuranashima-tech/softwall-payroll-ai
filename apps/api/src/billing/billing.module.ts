@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BillingController } from './billing.controller';
+import { MultiProviderBillingController } from './multi-provider.controller';
 import { BillingService } from './billing.service';
-import { StripeService } from './stripe.service';
-import { PaystackService } from './paystack.service';
+import { MultiProviderBillingService } from './multi-provider.service';
 import { PrismaService } from '../prisma.service';
 
 @Module({
-  controllers: [BillingController],
-  providers: [BillingService, StripeService, PaystackService, PrismaService],
-  exports: [BillingService, StripeService, PaystackService],
+  controllers: [MultiProviderBillingController],
+  providers: [BillingService, MultiProviderBillingService, PrismaService],
+  exports: [BillingService, MultiProviderBillingService],
 })
 export class BillingModule {}
